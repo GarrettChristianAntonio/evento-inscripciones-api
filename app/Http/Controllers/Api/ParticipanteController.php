@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\ParticipanteRegistrado;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegistrarParticipanteRequest;
 use Illuminate\Http\Request;
@@ -23,10 +24,16 @@ class ParticipanteController extends Controller
     public function store(RegistrarParticipanteRequest $request)
     {
         //
+        // 1) Crear participante con datos validados
         $participante = Participante::create($request->validated());
+
+        // 2) Disparar evento para acciones desacopladas (correo + contador)
+        event(new ParticipanteRegistrado($participante));
+
+        // 3) Responder a la API
         return response()->json([
             'mensaje' => 'Participante creado exitosamente.',
-            'data' => $participante,
+            'data'    => $participante,
         ], 201);
     }
 
