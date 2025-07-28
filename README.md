@@ -13,6 +13,39 @@
 
 Se optó por una **arquitectura basada en eventos (Event-Driven)**, con el objetivo de desacoplar acciones secundarias luego del registro exitoso de un participante. Esta decisión permite escalabilidad y mejor mantenimiento del código, facilitando la incorporación de nuevas funcionalidades de forma limpia.
 
+### 🔁 Sistema de Colas
+
+Para las acciones secundarias asincrónicas (como enviar un correo de bienvenida o actualizar un contador), se utilizó **Redis** como backend de colas, aprovechando su velocidad y bajo consumo de recursos. Laravel se configuró para usar colas con:
+Esto permite que las tareas se procesen en segundo plano sin bloquear la respuesta de la API, mejorando la experiencia general del sistema.
+
+#### 💡 Alternativa: Colas con base de datos
+
+También es posible utilizar `database` como driver de colas, lo que permite persistencia de los jobs en disco. Esta opción tiene la ventaja de no perder los trabajos en caso de reinicio o caída del worker, a costa de menor rendimiento.
+Pasos para implementarla:
+
+```bash
+php artisan queue:table
+php artisan migrate
+```
+Aunque no fue utilizada en este proyecto, se entiende cómo aplicarla en contextos donde la persistencia de jobs sea prioritaria.
+
+### ⚠️ Manejo de Fallos
+
+No se implementó el sistema de fallos (failed_jobs), pero se puede activar fácilmente para registrar errores en los jobs asincrónicos:
+
+```bash
+php artisan queue:failed-table
+php artisan migrate
+```
+
+Y configurar en .env:
+
+QUEUE_FAILED_DRIVER=database
+
+### 🧱 Sobre el uso de Resources
+
+En este proyecto no fue necesario utilizarlos
+
 ### 🔹 Desacoplamiento de responsabilidades
 
 Al registrar un participante, se dispara un evento `ParticipanteRegistrado`, el cual tiene dos listeners:
@@ -77,11 +110,9 @@ docker run --name redis-laravel -p 6379:6379 -d redis
 ```
 Esto levantará un contenedor Redis local en el puerto 6379.
 
-
-
-
 ## 🧪 Ejecución del Proyecto
 
+Pasos para el correcto funcionamiento.
 
 ### 1. Migrar la base de datos
 
@@ -90,6 +121,7 @@ php artisan migrate
 ```
 
 ### 2. Ejecutar el servidor de desarrollo
+
 ```bash
 php artisan serve
 ```

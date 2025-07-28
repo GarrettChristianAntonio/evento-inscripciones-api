@@ -11,20 +11,9 @@ use Illuminate\Support\Facades\Redis;
 
 class ParticipanteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(RegistrarParticipanteRequest $request)
     {
-        //
+        
         // 1) Crear participante con datos validados
         $participante = Participante::create($request->validated());
 
@@ -38,12 +27,10 @@ class ParticipanteController extends Controller
         ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-         $cacheKey = "participante:{$id}";
+        // Intentar recuperar datos del participante desde caché
+        $cacheKey = "participante:{$id}";
 
         // Intentar obtener desde Redis
         $cached = Redis::get($cacheKey);
@@ -73,21 +60,5 @@ class ParticipanteController extends Controller
             'mensaje' => 'Participante recuperado desde base de datos',
             'cached' => false,
         ]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }

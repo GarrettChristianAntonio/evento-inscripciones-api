@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -14,11 +13,6 @@ class RegistrarParticipanteRequest extends FormRequest
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
@@ -28,6 +22,7 @@ class RegistrarParticipanteRequest extends FormRequest
         'email'    => 'required|email|unique:participantes,email',
         ];
     }
+
     public function messages(): array
     {
         return [
@@ -48,6 +43,7 @@ class RegistrarParticipanteRequest extends FormRequest
             'email.unique'      => 'Este correo electrónico ya está registrado.',
         ];
     }
+
     public function attributes(): array
     {
         return [

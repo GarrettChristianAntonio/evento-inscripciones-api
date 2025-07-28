@@ -6,19 +6,14 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
+   // No se requieren bindings ni bootstrapping adicionales en este provider para este caso de uso
     public function register(): void
     {
-        //
+        
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        //
+       
     }
 }
