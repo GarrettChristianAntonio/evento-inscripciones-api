@@ -80,6 +80,7 @@ git clone https://github.com/tuusuario/evento-inscripciones-api.git
 cd evento-inscripciones-api
 ```
 ### 2. Configurar el archivo .env
+<pre> ```
 APP_NAME=Laravel
 APP_ENV=local
 APP_KEY=base64:GENERADO_CON_ARTISAN
@@ -100,7 +101,7 @@ REDIS_CLIENT=phpredis
 REDIS_HOST=127.0.0.1
 REDIS_PORT=6379
 
-
+ ``` </pre>
 ### 3. Configurar Redis con Docker
 
 Asegúrate de tener Docker instalado y luego ejecutá:
