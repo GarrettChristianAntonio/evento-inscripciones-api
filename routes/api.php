@@ -9,3 +9,5 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::post('/participantes', [ParticipanteController::class, 'store']);
+
+Route::get('/participantes/{id}', [ParticipanteController::class, 'show']);
