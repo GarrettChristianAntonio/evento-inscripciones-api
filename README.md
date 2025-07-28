@@ -73,12 +73,17 @@ Este enfoque respeta el **principio de responsabilidad única** (SRP) y permite 
 
 ## ⚙️ Instalación y Puesta en Marcha del Proyecto
 
-### 1. Clonar el repositorio
+### 1. Clonar el repositorio y instalar las dependencias
 
 ```bash
 git clone https://github.com/tuusuario/evento-inscripciones-api.git
 cd evento-inscripciones-api
+composer install
+cp .env.example .env
+php artisan key:generate
 ```
+
+
 ### 2. Configurar el archivo .env
 <pre> ```
 APP_NAME=Laravel
@@ -100,6 +105,10 @@ QUEUE_CONNECTION=redis
 REDIS_CLIENT=phpredis
 REDIS_HOST=127.0.0.1
 REDIS_PORT=6379
+
+APP_LOCALE=es
+APP_FALLBACK_LOCALE=en
+APP_FAKER_LOCALE=es_ES
 
  ``` </pre>
 ### 3. Configurar Redis con Docker
