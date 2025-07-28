@@ -111,6 +111,11 @@ APP_FALLBACK_LOCALE=en
 APP_FAKER_LOCALE=es_ES
 
  ``` </pre>
+
+### Realizar la migracion
+```bash
+php artisan migrate
+```
 ### 3. Configurar Redis con Docker
 
 Asegúrate de tener Docker instalado y luego ejecutá:
