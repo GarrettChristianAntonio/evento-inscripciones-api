@@ -1,66 +1,103 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Evaluación Técnica - Sistema de Inscripciones
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**Desarrollador:** Christian Garrett  
+**Framework:** Laravel 11  
+**Base de Datos:** MySQL  
+**Cache y Queues:** Redis  
+**Correo:** Simulación mediante logs  
+**Contenedor Redis:** Docker  
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🧠 Decisiones de Arquitectura
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Se optó por una **arquitectura basada en eventos (Event-Driven)**, con el objetivo de desacoplar acciones secundarias luego del registro exitoso de un participante. Esta decisión permite escalabilidad y mejor mantenimiento del código, facilitando la incorporación de nuevas funcionalidades de forma limpia.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 🔹 Desacoplamiento de responsabilidades
 
-## Learning Laravel
+Al registrar un participante, se dispara un evento `ParticipanteRegistrado`, el cual tiene dos listeners:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+1. **EnviarCorreoBienvenida** – simula el envío de un correo asincrónicamente (utilizando colas).
+2. **ActualizarContadorInscripciones** – actualiza un contador global en Redis de manera inmediata.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Este enfoque respeta el **principio de responsabilidad única** (SRP) y permite que las tareas se ejecuten de forma independiente y desacoplada.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 🚀 Stack Técnico
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+| Herramienta    | Propósito                                 |
+|----------------|--------------------------------------------|
+| Laravel 11     | Backend y API REST                         |
+| MySQL          | Base de datos principal                    |
+| Redis          | Cache y driver para queues                 |
+| Docker         | Contenedor Redis                           |
+| Laravel Queues | Procesamiento asincrónico de eventos       |
+| Log            | Simulación de envío de email               |
+| Laravel Lang   | Traducciones de validaciones al español    |
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+## ⚙️ Instalación y Puesta en Marcha del Proyecto
 
-## Contributing
+### 1. Clonar el repositorio
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+git clone https://github.com/tuusuario/evento-inscripciones-api.git
+cd evento-inscripciones-api
+```
+### 2. Configurar el archivo .env
+APP_NAME=Laravel
+APP_ENV=local
+APP_KEY=base64:GENERADO_CON_ARTISAN
+APP_DEBUG=true
+APP_URL=http://localhost
 
-## Code of Conduct
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=inscripcionesbd
+DB_USERNAME=root
+DB_PASSWORD=
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+CACHE_STORE=redis
+QUEUE_CONNECTION=redis
 
-## Security Vulnerabilities
+REDIS_CLIENT=phpredis
+REDIS_HOST=127.0.0.1
+REDIS_PORT=6379
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
-## License
+### 3. Configurar Redis con Docker
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Asegúrate de tener Docker instalado y luego ejecutá:
+
+```bash
+docker run --name redis-laravel -p 6379:6379 -d redis
+```
+Esto levantará un contenedor Redis local en el puerto 6379.
+
+
+
+
+## 🧪 Ejecución del Proyecto
+
+
+### 1. Migrar la base de datos
+
+```bash
+php artisan migrate
+```
+
+### 2. Ejecutar el servidor de desarrollo
+```bash
+php artisan serve
+```
+
+### 3. Ejecutar el worker de colas
+
+Para procesar los listeners asincrónicos:
+
+```bash
+php artisan queue:work
+```
